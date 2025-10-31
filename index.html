@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All 3D Animations</title>
+    <style>
+        :root{
+            --bg-1: #0b1226;
+            --bg-2: #071020;
+            --accent1: #06b6d4; /* teal */
+            --accent2: #8b5cf6; /* purple */
+        }
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-family:Segoe UI, Roboto, system-ui, Arial, sans-serif;
+            background: radial-gradient(1200px 600px at 10% 10%, rgba(99,102,241,0.08), transparent),
+                        radial-gradient(1000px 500px at 90% 90%, rgba(6,182,212,0.06), transparent),
+                        linear-gradient(135deg,var(--bg-1),var(--bg-2));
+            color: #fff;
+        }
+        .container{
+            display:flex;
+            gap:28px;
+            align-items:center;
+            justify-content:center;
+            padding:40px;
+        }
+        .btn{
+            width:160px;
+            height:160px;
+            border-radius:50%;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            text-decoration:none;
+            color: #fff;
+            font-weight:700;
+            font-size:1.05rem;
+            position:relative;
+            overflow:hidden;
+            box-shadow: 0 12px 30px rgba(2,6,23,0.6), inset 0 -6px 20px rgba(0,0,0,0.15);
+            transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s;
+        }
+        .btn:focus{outline:3px solid rgba(255,255,255,0.12); outline-offset:6px}
+        .btn::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            border-radius:50%;
+            z-index:0;
+            filter:blur(18px);
+            opacity:.85;
+            transform:scale(.94);
+            transition: transform .5s ease;
+        }
+        .btn .label{position:relative;z-index:2}
+        .btn .badge{position:absolute;right:10px;bottom:10px;z-index:3;background:rgba(255,255,255,0.08);padding:6px 10px;border-radius:999px;font-size:.78rem}
+        .btn:hover{transform:translateY(-8px) scale(1.03);box-shadow:0 18px 40px rgba(2,6,23,0.7)}
+        .btn:hover::before{transform:scale(1)}
+
+        .circle1{background:linear-gradient(135deg,var(--accent1),#06d6a0)}
+        .circle1::before{background:radial-gradient(circle at 30% 30%, rgba(6,182,212,0.95), transparent 40%)}
+
+        .circle2{background:linear-gradient(135deg,var(--accent2),#3b82f6)}
+        .circle2::before{background:radial-gradient(circle at 70% 70%, rgba(139,92,246,0.95), transparent 40%)}
+
+        @media (max-width:480px){
+            .container{flex-direction:column;gap:18px}
+            .btn{width:128px;height:128px}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="try.html" class="btn circle1" aria-label="Open Circle 1">
+            <span class="label">Circle 1</span>
+            
+        </a>
+
+        <a href="try2.html" class="btn circle2" aria-label="Open Circle 2">
+            <span class="label">Circle 2</span>
+            
+        </a>
+    </div>
+</body>
+</html>
