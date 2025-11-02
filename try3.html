@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+    <title>Interactive Login Page</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+/* Characters Section */
+.characters-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.character {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.character:hover {
+    transform: scale(1.05);
+}
+
+/* Character Head */
+.head {
+    width: 80px;
+    height: 80px;
+    background: #fdbcb4;
+    border-radius: 50%;
+    position: relative;
+    margin-bottom: 10px;
+    border: 3px solid #f4a261;
+}
+
+/* Eyes */
+.eyes {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+}
+
+.eye {
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.pupil {
+    width: 6px;
+    height: 6px;
+    background: #333;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Mouth */
+.mouth {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 10px;
+    border: 2px solid #333;
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+}
+
+/* Body */
+.body {
+    width: 60px;
+    height: 80px;
+    background: #2a9d8f;
+    border-radius: 30px 30px 10px 10px;
+    margin-bottom: 10px;
+    border: 3px solid #264653;
+}
+
+/* Legs */
+.legs {
+    display: flex;
+    gap: 10px;
+}
+
+.leg {
+    width: 20px;
+    height: 40px;
+    background: #e76f51;
+    border-radius: 10px;
+    border: 2px solid #d62828;
+}
+
+/* Character Animations */
+.character.look-right .pupil {
+    left: 6px;
+}
+
+.character.eyes-closed .eye {
+    height: 2px;
+    border-radius: 0;
+    background: #333;
+}
+
+.character.eyes-closed .pupil {
+    display: none;
+}
+
+.character.jumping {
+    animation: jump 0.6s ease-in-out;
+}
+
+@keyframes jump {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+}
+
+/* Form Section */
+.form-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.form-container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    backdrop-filter: blur(10px);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-header h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.form-toggle {
+    display: flex;
+    background: #f0f0f0;
+    border-radius: 25px;
+    padding: 4px;
+    margin-bottom: 20px;
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    background: transparent;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #666;
+}
+
+.toggle-btn.active {
+    background: #667eea;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.input-group {
+    margin-bottom: 20px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.input-group.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    height: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.form-footer p {
+    color: #666;
+}
+
+.form-footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .characters-section {
+        flex: 0.4;
+        gap: 30px;
+    }
+    
+    .character {
+        transform: scale(0.8);
+    }
+    
+    .form-section {
+        flex: 0.6;
+        padding: 20px;
+    }
+    
+    .form-container {
+        padding: 30px 20px;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Left side - Characters -->
+        <div class="characters-section">
+            <div class="character" id="character1">
+                <div class="head">
+                    <div class="eyes">
+                        <div class="eye left-eye">
+                            <div class="pupil"></div>
+                        </div>
+                        <div class="eye right-eye">
+                            <div class="pupil"></div>
+                        </div>
+                    </div>
+                    <div class="mouth"></div>
+                </div>
+                <div class="body"></div>
+                <div class="legs">
+                    <div class="leg left-leg"></div>
+                    <div class="leg right-leg"></div>
+                </div>
+            </div>
+
+            <div class="character" id="character2">
+                <div class="head">
+                    <div class="eyes">
+                        <div class="eye left-eye">
+                            <div class="pupil"></div>
+                        </div>
+                        <div class="eye right-eye">
+                            <div class="pupil"></div>
+                        </div>
+                    </div>
+                    <div class="mouth"></div>
+                </div>
+                <div class="body"></div>
+                <div class="legs">
+                    <div class="leg left-leg"></div>
+                    <div class="leg right-leg"></div>
+                </div>
+            </div>
+
+            <div class="character" id="character3">
+                <div class="head">
+                    <div class="eyes">
+                        <div class="eye left-eye">
+                            <div class="pupil"></div>
+                        </div>
+                        <div class="eye right-eye">
+                            <div class="pupil"></div>
+                        </div>
+                    </div>
+                    <div class="mouth"></div>
+                </div>
+                <div class="body"></div>
+                <div class="legs">
+                    <div class="leg left-leg"></div>
+                    <div class="leg right-leg"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side - Login Form -->
+        <div class="form-section">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2 id="form-title">Login</h2>
+                    <div class="form-toggle">
+                        <button class="toggle-btn active" id="login-btn">Login</button>
+                        <button class="toggle-btn" id="signup-btn">Sign Up</button>
+                    </div>
+                </div>
+
+                <form id="auth-form">
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+
+                    <div class="input-group" id="email-group" style="display: none;">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+
+                    <div class="input-group" id="confirm-password-group" style="display: none;">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" name="confirm-password">
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submit-btn">Login</button>
+                </form>
+
+                <div class="form-footer">
+                    <p id="form-switch-text">
+                        Don't have an account? 
+                        <a href="#" id="switch-form">Sign up here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Main JavaScript file for interactive login page
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Interactive Login Page loaded!');
+    
+    // Get DOM elements
+    const characters = document.querySelectorAll('.character');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const emailInput = document.getElementById('email');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const loginBtn = document.getElementById('login-btn');
+    const signupBtn = document.getElementById('signup-btn');
+    const formTitle = document.getElementById('form-title');
+    const submitBtn = document.getElementById('submit-btn');
+    const switchFormLink = document.getElementById('switch-form');
+    const formSwitchText = document.getElementById('form-switch-text');
+    const authForm = document.getElementById('auth-form');
+    const emailGroup = document.getElementById('email-group');
+    const confirmPasswordGroup = document.getElementById('confirm-password-group');
+    
+    let isLoginMode = true;
+    let passwordEntered = false;
+    
+    // Character animation functions
+    function makeCharactersLookRight() {
+        characters.forEach(character => {
+            character.classList.add('look-right');
+            character.classList.remove('eyes-closed');
+        });
+    }
+    
+    function makeCharactersCloseEyes() {
+        characters.forEach(character => {
+            character.classList.add('eyes-closed');
+            character.classList.remove('look-right');
+        });
+    }
+    
+    function makeCharactersJump() {
+        characters.forEach((character, index) => {
+            setTimeout(() => {
+                character.classList.add('jumping');
+                setTimeout(() => {
+                    character.classList.remove('jumping');
+                }, 600);
+            }, index * 100);
+        });
+    }
+    
+    function resetCharacters() {
+        characters.forEach(character => {
+            character.classList.remove('look-right', 'eyes-closed', 'jumping');
+        });
+    }
+    
+    // Input event listeners
+    usernameInput.addEventListener('focus', () => {
+        makeCharactersLookRight();
+    });
+    
+    usernameInput.addEventListener('blur', () => {
+        if (!passwordInput.value) {
+            resetCharacters();
+        }
+    });
+    
+    passwordInput.addEventListener('focus', () => {
+        makeCharactersCloseEyes();
+    });
+    
+    passwordInput.addEventListener('input', () => {
+        if (passwordInput.value.length > 0 && !passwordEntered) {
+            passwordEntered = true;
+            setTimeout(() => {
+                makeCharactersJump();
+                passwordEntered = false;
+            }, 500);
+        }
+    });
+    
+    passwordInput.addEventListener('blur', () => {
+        if (!usernameInput.matches(':focus')) {
+            resetCharacters();
+        }
+    });
+    
+    // Form mode switching
+    function switchToLogin() {
+        isLoginMode = true;
+        loginBtn.classList.add('active');
+        signupBtn.classList.remove('active');
+        formTitle.textContent = 'Login';
+        submitBtn.textContent = 'Login';
+        
+        // Hide signup-specific fields
+        emailGroup.style.display = 'none';
+        confirmPasswordGroup.style.display = 'none';
+        
+        // Update form switch text
+        formSwitchText.innerHTML = `
+            Don't have an account? 
+            <a href="#" id="switch-form">Sign up here</a>
+        `;
+        
+        // Remove required attribute from signup fields
+        emailInput.removeAttribute('required');
+        confirmPasswordInput.removeAttribute('required');
+        
+        // Re-attach event listener to new switch link
+        document.getElementById('switch-form').addEventListener('click', handleFormSwitch);
+    }
+    
+    function switchToSignup() {
+        isLoginMode = false;
+        signupBtn.classList.add('active');
+        loginBtn.classList.remove('active');
+        formTitle.textContent = 'Sign Up';
+        submitBtn.textContent = 'Sign Up';
+        
+        // Show signup-specific fields
+        emailGroup.style.display = 'block';
+        confirmPasswordGroup.style.display = 'block';
+        
+        // Update form switch text
+        formSwitchText.innerHTML = `
+            Already have an account? 
+            <a href="#" id="switch-form">Login here</a>
+        `;
+        
+        // Add required attribute to signup fields
+        emailInput.setAttribute('required', 'required');
+        confirmPasswordInput.setAttribute('required', 'required');
+        
+        // Re-attach event listener to new switch link
+        document.getElementById('switch-form').addEventListener('click', handleFormSwitch);
+    }
+    
+    function handleFormSwitch(e) {
+        e.preventDefault();
+        if (isLoginMode) {
+            switchToSignup();
+        } else {
+            switchToLogin();
+        }
+        resetCharacters();
+    }
+    
+    // Event listeners for form switching
+    loginBtn.addEventListener('click', () => {
+        if (!isLoginMode) {
+            switchToLogin();
+        }
+    });
+    
+    signupBtn.addEventListener('click', () => {
+        if (isLoginMode) {
+            switchToSignup();
+        }
+    });
+    
+    // Initial switch form link event listener
+    switchFormLink.addEventListener('click', handleFormSwitch);
+    
+    // Form submission
+    authForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(authForm);
+        const username = formData.get('username');
+        const password = formData.get('password');
+        
+        if (isLoginMode) {
+            // Login logic
+            console.log('Login attempt:', { username, password });
+            alert(`Welcome back, ${username}!`);
+        } else {
+            // Signup logic
+            const email = formData.get('email');
+            const confirmPassword = formData.get('confirm-password');
+            
+            // Basic validation
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            console.log('Signup attempt:', { username, email, password });
+            alert(`Account created successfully for ${username}!`);
+        }
+        
+        // Make characters celebrate
+        makeCharactersJump();
+        
+        // Reset form after submission
+        setTimeout(() => {
+            authForm.reset();
+            resetCharacters();
+        }, 2000);
+    });
+    
+    // Character click interactions
+    characters.forEach((character, index) => {
+        character.addEventListener('click', () => {
+            // Make clicked character wave (jump animation)
+            character.classList.add('jumping');
+            setTimeout(() => {
+                character.classList.remove('jumping');
+            }, 600);
+        });
+    });
+    
+    // Add some random character movements for liveliness
+    function randomCharacterMovement() {
+        if (!usernameInput.matches(':focus') && !passwordInput.matches(':focus')) {
+            const randomCharacter = characters[Math.floor(Math.random() * characters.length)];
+            const randomAction = Math.random();
+            
+            if (randomAction < 0.3) {
+                randomCharacter.classList.add('look-right');
+                setTimeout(() => {
+                    randomCharacter.classList.remove('look-right');
+                }, 1000);
+            } else if (randomAction < 0.6) {
+                randomCharacter.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    randomCharacter.style.transform = '';
+                }, 500);
+            }
+        }
+    }
+    
+    // Random movements every 5-10 seconds
+    setInterval(randomCharacterMovement, Math.random() * 5000 + 5000);
+    
+    console.log('All event listeners attached successfully!');
+});
+    </script>
+</body>
+
+</html>
