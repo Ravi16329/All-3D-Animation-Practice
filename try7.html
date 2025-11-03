@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+    <title>Image Shatter Animation</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+       /* CSS Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --accent-color: #f093fb;
+    --success-color: #4ecdc4;
+    --warning-color: #ffd93d;
+    --error-color: #ff6b6b;
+    --dark-bg: #0f0f23;
+    --light-bg: #1a1a2e;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-light: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.7);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    --gradient-accent: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--dark-bg);
+    color: var(--text-light);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Firefox Scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.1);
+}
+
+/* Background */
+.background-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        var(--dark-bg) 0%, 
+        var(--light-bg) 25%, 
+        #16213e 50%, 
+        var(--light-bg) 75%, 
+        var(--dark-bg) 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Upload Section */
+.upload-section {
+    margin-bottom: 3rem;
+}
+
+.upload-area {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 2px dashed var(--glass-border);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+    transition: left 0.5s ease;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px var(--shadow-color);
+}
+
+.upload-area:hover::before {
+    left: 100%;
+}
+
+.upload-area.dragover {
+    border-color: var(--success-color);
+    background: rgba(78, 205, 196, 0.1);
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.upload-area h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+}
+
+.upload-area p {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+/* Sample Images */
+.sample-images {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.sample-images h4 {
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+.sample-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.sample-image {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.sample-image:hover {
+    transform: scale(1.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 25px var(--shadow-color);
+}
+
+/* Controls Section */
+.controls-section {
+    margin-bottom: 2rem;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 300px;
+}
+
+.controls-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 20px 40px var(--shadow-color);
+}
+
+.controls-panel h3 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.control-group label {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    min-width: 100px;
+}
+
+.slider {
+    flex: 1;
+    min-width: 80px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.control-group span {
+    min-width: 40px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.8rem;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+.control-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.control-btn.primary {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.control-btn.secondary {
+    background: transparent;
+    color: var(--text-light);
+    border: 1px solid var(--primary-color);
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.control-btn.primary:hover {
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Animation Section - FULL PAGE */
+.animation-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    background: var(--dark-bg);
+}
+
+.image-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-piece {
+    position: absolute;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: all 0.1s ease-out;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+/* Animation States */
+.image-piece.scattered {
+    animation: scatterAnimation var(--animation-duration, 3s) ease-in-out;
+}
+
+.image-piece.reassembling {
+    animation: reassembleAnimation var(--animation-duration, 3s) ease-in-out;
+}
+
+@keyframes scatterAnimation {
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(var(--scatter-x, 0), var(--scatter-y, 0)) 
+                   rotate(var(--rotation, 0deg)) 
+                   scale(0.8);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(var(--scatter-x, 0), var(--scatter-y, 0)) 
+                   rotate(var(--rotation, 0deg)) 
+                   scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes reassembleAnimation {
+    0% {
+        transform: translate(var(--scatter-x, 0), var(--scatter-y, 0)) 
+                   rotate(var(--rotation, 0deg)) 
+                   scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(calc(var(--scatter-x, 0) * 0.5), calc(var(--scatter-y, 0) * 0.5)) 
+                   rotate(calc(var(--rotation, 0deg) * 0.5)) 
+                   scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    text-align: center;
+    padding: 3rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .title {
+        font-size: 2.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .upload-area {
+        padding: 2rem 1rem;
+    }
+    
+    .controls-section {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        top: auto;
+        width: auto;
+    }
+    
+    .controls-panel {
+        padding: 1rem;
+    }
+    
+    .control-group {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: 0.3rem;
+    }
+    
+    .control-group label {
+        min-width: auto;
+        margin-bottom: 0.3rem;
+    }
+    
+    .control-buttons {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    
+    .control-btn {
+        flex: 1;
+        min-width: 0;
+        padding: 0.4rem 0.5rem;
+        font-size: 0.7rem;
+    }
+    
+    .sample-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 2rem;
+    }
+    
+    .upload-area {
+        padding: 1.5rem 1rem;
+    }
+    
+    .upload-icon {
+        font-size: 3rem;
+    }
+    
+    .controls-panel h3 {
+        font-size: 1rem;
+    }
+    
+    .control-btn {
+        font-size: 0.6rem;
+        padding: 0.3rem 0.4rem;
+    }
+}
+
+/* Animation Performance Optimizations */
+.image-piece {
+    will-change: transform, opacity;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.2);
+        --glass-border: rgba(255, 255, 255, 0.4);
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .image-piece,
+    .loading-spinner,
+    .background-gradient {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+    
+    .upload-area:hover,
+    .control-btn:hover,
+    .sample-image:hover {
+        transform: none !important;
+    }
+}
+
+/* Focus States for Accessibility */
+.upload-area:focus-within,
+.control-btn:focus,
+.slider:focus,
+.sample-image:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Hide scrollbars when animation is running */
+.animation-section::-webkit-scrollbar {
+    display: none;
+}
+
+.animation-section {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <div class="background-gradient"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="title">Image Shatter Animation</h1>
+            <p class="subtitle">Watch your image break apart and reassemble in mesmerizing loops</p>
+        </header>
+
+        <!-- Upload Section -->
+        <section class="upload-section" id="upload-section">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">📁</div>
+                <h3>Drop your image here</h3>
+                <p>or click to browse</p>
+                <input type="file" id="file-input" accept="image/*" hidden>
+            </div>
+            
+            <!-- Sample Images -->
+            <div class="sample-images">
+                <h4>Or try these samples:</h4>
+                <div class="sample-grid">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop" alt="Sample 1" class="sample-image" data-sample="1">
+                    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop" alt="Sample 2" class="sample-image" data-sample="2">
+                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop" alt="Sample 3" class="sample-image" data-sample="3">
+                </div>
+            </div>
+        </section>
+
+        <!-- Controls Section -->
+        <section class="controls-section" id="controls-section" style="display: none;">
+            <div class="controls-panel">
+                <h3>Animation Controls</h3>
+                
+                <div class="control-group">
+                    <label for="grid-size">Grid Size (pieces per row):</label>
+                    <input type="range" id="grid-size" min="4" max="20" value="8" class="slider">
+                    <span id="grid-size-value">8</span>
+                </div>
+                
+                <div class="control-group">
+                    <label for="animation-speed">Animation Speed:</label>
+                    <input type="range" id="animation-speed" min="0.5" max="3" step="0.1" value="1" class="slider">
+                    <span id="animation-speed-value">1x</span>
+                </div>
+                
+                <div class="control-group">
+                    <label for="scatter-distance">Scatter Distance:</label>
+                    <input type="range" id="scatter-distance" min="50" max="300" value="150" class="slider">
+                    <span id="scatter-distance-value">150px</span>
+                </div>
+                
+                <div class="control-buttons">
+                    <button id="play-pause-btn" class="control-btn primary">⏸️ Pause</button>
+                    <button id="reset-btn" class="control-btn secondary">🔄 Reset</button>
+                    <button id="new-image-btn" class="control-btn secondary">🖼️ New Image</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animation Container -->
+        <section class="animation-section" id="animation-section" style="display: none;">
+            <div class="image-container" id="image-container">
+                <!-- Image pieces will be generated here -->
+            </div>
+            
+            <!-- Loading Indicator -->
+            <div class="loading-indicator" id="loading-indicator" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Preparing animation...</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Drag and drop any image to see the magic happen! ✨</p>
+    </footer>
+
+    <script >
+
+        // Image Shatter Animation Application
+class ImageShatterApp {
+    constructor() {
+        this.currentImage = null;
+        this.pieces = [];
+        this.animationId = null;
+        this.isAnimating = false;
+        this.isPaused = false;
+        
+        // Animation settings
+        this.settings = {
+            gridSize: 8,
+            animationSpeed: 1,
+            scatterDistance: 200,
+            animationDuration: 3000
+        };
+        
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.setupControls();
+        console.log('Image Shatter App initialized');
+    }
+
+    setupEventListeners() {
+        // File upload
+        const fileInput = document.getElementById('file-input');
+        const uploadArea = document.getElementById('upload-area');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                this.loadImage(files[0]);
+            }
+        });
+
+        // Sample images
+        const sampleImages = document.querySelectorAll('.sample-image');
+        sampleImages.forEach(img => {
+            img.addEventListener('click', () => {
+                this.loadImageFromUrl(img.src);
+            });
+        });
+
+        // Control buttons
+        document.getElementById('play-pause-btn').addEventListener('click', () => this.toggleAnimation());
+        document.getElementById('reset-btn').addEventListener('click', () => this.resetAnimation());
+        document.getElementById('new-image-btn').addEventListener('click', () => this.showUploadSection());
+    }
+
+    setupControls() {
+        // Grid size control
+        const gridSizeSlider = document.getElementById('grid-size');
+        const gridSizeValue = document.getElementById('grid-size-value');
+        
+        gridSizeSlider.addEventListener('input', (e) => {
+            this.settings.gridSize = parseInt(e.target.value);
+            gridSizeValue.textContent = e.target.value;
+            if (this.currentImage && !this.isAnimating) {
+                this.createImagePieces();
+            }
+        });
+
+        // Animation speed control
+        const speedSlider = document.getElementById('animation-speed');
+        const speedValue = document.getElementById('animation-speed-value');
+        
+        speedSlider.addEventListener('input', (e) => {
+            this.settings.animationSpeed = parseFloat(e.target.value);
+            speedValue.textContent = e.target.value + 'x';
+            this.settings.animationDuration = 3000 / this.settings.animationSpeed;
+        });
+
+        // Scatter distance control
+        const scatterSlider = document.getElementById('scatter-distance');
+        const scatterValue = document.getElementById('scatter-distance-value');
+        
+        scatterSlider.addEventListener('input', (e) => {
+            this.settings.scatterDistance = parseInt(e.target.value);
+            scatterValue.textContent = e.target.value + 'px';
+        });
+    }
+
+    handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            this.loadImage(file);
+        } else {
+            alert('Please select a valid image file.');
+        }
+    }
+
+    loadImage(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.loadImageFromUrl(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    loadImageFromUrl(url) {
+        this.showLoadingIndicator();
+        
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        
+        img.onload = () => {
+            this.currentImage = img;
+            this.hideLoadingIndicator();
+            this.showAnimationSection();
+            this.createImagePieces();
+            this.startAnimation();
+        };
+        
+        img.onerror = () => {
+            this.hideLoadingIndicator();
+            alert('Failed to load image. Please try another one.');
+        };
+        
+        img.src = url;
+    }
+
+    showLoadingIndicator() {
+        document.getElementById('loading-indicator').style.display = 'block';
+    }
+
+    hideLoadingIndicator() {
+        document.getElementById('loading-indicator').style.display = 'none';
+    }
+
+    showAnimationSection() {
+        document.getElementById('upload-section').style.display = 'none';
+        document.getElementById('controls-section').style.display = 'block';
+        document.getElementById('animation-section').style.display = 'block';
+        
+        // Hide main container content
+        document.querySelector('.header').style.display = 'none';
+        document.querySelector('.footer').style.display = 'none';
+    }
+
+    showUploadSection() {
+        this.stopAnimation();
+        this.clearPieces();
+        document.getElementById('upload-section').style.display = 'block';
+        document.getElementById('controls-section').style.display = 'none';
+        document.getElementById('animation-section').style.display = 'none';
+        
+        // Show main container content
+        document.querySelector('.header').style.display = 'block';
+        document.querySelector('.footer').style.display = 'block';
+        
+        this.currentImage = null;
+    }
+
+    createImagePieces() {
+        if (!this.currentImage) return;
+
+        this.clearPieces();
+        
+        const container = document.getElementById('image-container');
+        
+        // Calculate optimal image size to fill most of the screen
+        const maxWidth = window.innerWidth * 0.8;
+        const maxHeight = window.innerHeight * 0.8;
+        
+        const imageAspect = this.currentImage.width / this.currentImage.height;
+        let displayWidth, displayHeight;
+        
+        if (imageAspect > maxWidth / maxHeight) {
+            displayWidth = maxWidth;
+            displayHeight = maxWidth / imageAspect;
+        } else {
+            displayHeight = maxHeight;
+            displayWidth = maxHeight * imageAspect;
+        }
+
+        // Create canvas to get image data
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = displayWidth;
+        canvas.height = displayHeight;
+        ctx.drawImage(this.currentImage, 0, 0, displayWidth, displayHeight);
+
+        // Calculate piece dimensions
+        const pieceWidth = displayWidth / this.settings.gridSize;
+        const pieceHeight = displayHeight / this.settings.gridSize;
+
+        // Calculate center position
+        const centerX = (window.innerWidth - displayWidth) / 2;
+        const centerY = (window.innerHeight - displayHeight) / 2;
+
+        // Create pieces
+        for (let row = 0; row < this.settings.gridSize; row++) {
+            for (let col = 0; col < this.settings.gridSize; col++) {
+                const piece = this.createPiece(
+                    canvas.toDataURL(),
+                    centerX + (col * pieceWidth),
+                    centerY + (row * pieceHeight),
+                    pieceWidth,
+                    pieceHeight,
+                    displayWidth,
+                    displayHeight,
+                    col * pieceWidth,
+                    row * pieceHeight,
+                    col,
+                    row
+                );
+                
+                container.appendChild(piece);
+                this.pieces.push(piece);
+            }
+        }
+    }
+
+    createPiece(imageSrc, x, y, width, height, totalWidth, totalHeight, bgX, bgY, col, row) {
+        const piece = document.createElement('div');
+        piece.className = 'image-piece';
+        
+        // Set piece dimensions and position
+        piece.style.width = width + 'px';
+        piece.style.height = height + 'px';
+        piece.style.left = x + 'px';
+        piece.style.top = y + 'px';
+        
+        // Set background image with proper positioning
+        piece.style.backgroundImage = `url(${imageSrc})`;
+        piece.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+        piece.style.backgroundSize = `${totalWidth}px ${totalHeight}px`;
+        
+        // Store piece data
+        piece.dataset.col = col;
+        piece.dataset.row = row;
+        piece.dataset.originalX = x;
+        piece.dataset.originalY = y;
+        
+        return piece;
+    }
+
+    clearPieces() {
+        this.pieces.forEach(piece => piece.remove());
+        this.pieces = [];
+    }
+
+    startAnimation() {
+        if (this.pieces.length === 0) return;
+        
+        this.isAnimating = true;
+        this.isPaused = false;
+        this.updatePlayPauseButton();
+        
+        this.animationLoop();
+    }
+
+    stopAnimation() {
+        this.isAnimating = false;
+        this.isPaused = false;
+        if (this.animationId) {
+            clearTimeout(this.animationId);
+            this.animationId = null;
+        }
+        this.updatePlayPauseButton();
+    }
+
+    toggleAnimation() {
+        if (this.isPaused) {
+            this.isPaused = false;
+            this.animationLoop();
+        } else {
+            this.isPaused = true;
+            if (this.animationId) {
+                clearTimeout(this.animationId);
+                this.animationId = null;
+            }
+        }
+        this.updatePlayPauseButton();
+    }
+
+    updatePlayPauseButton() {
+        const btn = document.getElementById('play-pause-btn');
+        if (this.isPaused) {
+            btn.innerHTML = '▶️ Play';
+        } else {
+            btn.innerHTML = '⏸️ Pause';
+        }
+    }
+
+    resetAnimation() {
+        this.stopAnimation();
+        this.pieces.forEach(piece => {
+            piece.classList.remove('scattered', 'reassembling');
+            piece.style.left = piece.dataset.originalX + 'px';
+            piece.style.top = piece.dataset.originalY + 'px';
+            piece.style.transform = 'translate(0, 0) rotate(0deg) scale(1)';
+        });
+        
+        setTimeout(() => {
+            this.startAnimation();
+        }, 100);
+    }
+
+    animationLoop() {
+        if (!this.isAnimating || this.isPaused) return;
+
+        // Scatter phase
+        this.scatterPieces();
+        
+        // Reassemble phase
+        this.animationId = setTimeout(() => {
+            if (this.isAnimating && !this.isPaused) {
+                this.reassemblePieces();
+                
+                // Loop back to scatter
+                this.animationId = setTimeout(() => {
+                    if (this.isAnimating && !this.isPaused) {
+                        this.animationLoop();
+                    }
+                }, this.settings.animationDuration);
+            }
+        }, this.settings.animationDuration);
+    }
+
+    scatterPieces() {
+        this.pieces.forEach((piece, index) => {
+            // Calculate scatter position with larger range for full screen
+            const angle = (Math.random() * 2 - 1) * Math.PI;
+            const distance = this.settings.scatterDistance * (0.8 + Math.random() * 1.2);
+            const scatterX = Math.cos(angle) * distance;
+            const scatterY = Math.sin(angle) * distance;
+            
+            // Calculate rotation
+            const rotation = (Math.random() * 2 - 1) * 720; // More rotation for dramatic effect
+            
+            // Set CSS custom properties for animation
+            piece.style.setProperty('--scatter-x', scatterX + 'px');
+            piece.style.setProperty('--scatter-y', scatterY + 'px');
+            piece.style.setProperty('--rotation', rotation + 'deg');
+            piece.style.setProperty('--animation-duration', this.settings.animationDuration + 'ms');
+            
+            // Add scatter class with delay for wave effect
+            setTimeout(() => {
+                piece.classList.remove('reassembling');
+                piece.classList.add('scattered');
+            }, index * 15); // Faster stagger for more pieces
+        });
+    }
+
+    reassemblePieces() {
+        this.pieces.forEach((piece, index) => {
+            setTimeout(() => {
+                piece.classList.remove('scattered');
+                piece.classList.add('reassembling');
+            }, index * 10); // Faster reassembly
+        });
+    }
+
+    // Utility methods
+    getRandomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    }
+}
+
+// Performance optimization utilities
+class PerformanceOptimizer {
+    static requestAnimationFrame = window.requestAnimationFrame || 
+        window.webkitRequestAnimationFrame || 
+        window.mozRequestAnimationFrame || 
+        function(callback) { setTimeout(callback, 1000 / 60); };
+
+    static debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    static throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        }
+    }
+}
+
+// Image processing utilities
+class ImageProcessor {
+    static async resizeImage(file, maxWidth = 1200, maxHeight = 800) {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = () => {
+                const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
+                canvas.width = img.width * ratio;
+                canvas.height = img.height * ratio;
+                
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob(resolve, 'image/jpeg', 0.9);
+            };
+            
+            img.src = URL.createObjectURL(file);
+        });
+    }
+
+    static getImageDominantColor(imageElement) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 1;
+        canvas.height = 1;
+        
+        ctx.drawImage(imageElement, 0, 0, 1, 1);
+        const imageData = ctx.getImageData(0, 0, 1, 1).data;
+        
+        return `rgb(${imageData[0]}, ${imageData[1]}, ${imageData[2]})`;
+    }
+}
+
+// Error handling and user feedback
+class NotificationSystem {
+    static show(message, type = 'info', duration = 3000) {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-light);
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Remove after duration
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, duration);
+    }
+}
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', () => {
+    // Check for required browser features
+    if (!window.FileReader) {
+        NotificationSystem.show('Your browser does not support file reading. Please use a modern browser.', 'error');
+        return;
+    }
+
+    if (!document.createElement('canvas').getContext) {
+        NotificationSystem.show('Your browser does not support canvas. Please use a modern browser.', 'error');
+        return;
+    }
+
+    // Initialize the app
+    window.imageShatterApp = new ImageShatterApp();
+    
+    // Add some helpful keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT') return;
+        
+        switch (e.key.toLowerCase()) {
+            case ' ':
+                e.preventDefault();
+                if (window.imageShatterApp.pieces.length > 0) {
+                    window.imageShatterApp.toggleAnimation();
+                }
+                break;
+            case 'r':
+                e.preventDefault();
+                if (window.imageShatterApp.pieces.length > 0) {
+                    window.imageShatterApp.resetAnimation();
+                }
+                break;
+            case 'n':
+            case 'escape':
+                e.preventDefault();
+                window.imageShatterApp.showUploadSection();
+                break;
+            case 'f':
+                e.preventDefault();
+                // Toggle fullscreen
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(console.warn);
+                } else {
+                    document.exitFullscreen();
+                }
+                break;
+        }
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', PerformanceOptimizer.debounce(() => {
+        if (window.imageShatterApp.currentImage && !window.imageShatterApp.isAnimating) {
+            window.imageShatterApp.createImagePieces();
+        }
+    }, 250));
+    
+    // Handle visibility change (tab switching)
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && window.imageShatterApp.isAnimating) {
+            window.imageShatterApp.toggleAnimation();
+        }
+    });
+    
+    console.log('Image Shatter Animation loaded successfully!');
+    NotificationSystem.show('Welcome! Upload an image or try a sample to get started.', 'info');
+});
+
+// Handle page unload
+window.addEventListener('beforeunload', () => {
+    if (window.imageShatterApp) {
+        window.imageShatterApp.stopAnimation();
+    }
+});
+    </script>
+</body>
+</html>
