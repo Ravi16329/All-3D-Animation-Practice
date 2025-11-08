@@ -1,0 +1,337 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    overflow: hidden;
+    height: 100vh;
+}
+
+#app {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Canvas Container */
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#three-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* UI Overlay */
+#ui-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    display: grid;
+    grid-template-areas: 
+        "header header"
+        "subtitle subtitle"
+        ". ."
+        "controls legend";
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Header */
+.ui-header {
+    grid-area: header;
+    text-align: center;
+    pointer-events: auto;
+}
+
+.ui-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    max-width: 600px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Subtitle Container */
+.subtitle-container {
+    grid-area: subtitle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60px;
+    pointer-events: auto;
+}
+
+#subtitle-text {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+    max-width: 80%;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+#subtitle-text.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Control Panel */
+.control-panel {
+    grid-area: controls;
+    display: flex;
+    gap: 10px;
+    align-items: end;
+    pointer-events: auto;
+}
+
+.control-btn {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.control-btn:hover {
+    background: rgba(59, 130, 246, 0.3);
+    transform: scale(1.1);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+}
+
+/* Scene Info */
+.scene-info {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    backdrop-filter: blur(10px);
+    max-width: 300px;
+    pointer-events: auto;
+}
+
+.scene-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #3b82f6;
+    margin-bottom: 8px;
+}
+
+.scene-description {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    line-height: 1.4;
+}
+
+/* Security Legend */
+.security-legend {
+    grid-area: legend;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    backdrop-filter: blur(10px);
+    min-width: 280px;
+    pointer-events: auto;
+}
+
+.security-legend h3 {
+    color: #3b82f6;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.control-item:last-child {
+    border-bottom: none;
+}
+
+.control-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+.control-name {
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.control-status {
+    font-size: 1rem;
+}
+
+.control-item.active .control-status {
+    color: #22c55e;
+}
+
+.control-item.completed .control-status::after {
+    content: "✅";
+}
+
+/* Loading Screen */
+#loading-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    transition: opacity 0.5s ease;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(59, 130, 246, 0.3);
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #ui-overlay {
+        grid-template-areas: 
+            "header"
+            "subtitle"
+            "."
+            "controls"
+            "legend";
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+    
+    .ui-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .scene-info {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin-bottom: 20px;
+    }
+    
+    .security-legend {
+        min-width: auto;
+    }
+    
+    .control-panel {
+        justify-content: center;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.7);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59, 130, 246, 0.5) rgba(15, 23, 42, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
