@@ -6,70 +6,70 @@ class ScriptManager {
                 title: 'The Journey Begins',
                 description: 'Understanding message transmission',
                 dialogue: "Imagine sending a private message. It doesn't fly directly — it hops through many devices. Who might touch it?",
-                duration: 15000 // 15 seconds
+                duration: 12000 // Reduced from 15 seconds
             },
             {
                 id: 'travel',
                 title: 'Network Traversal',
                 description: 'Messages hop through network nodes',
                 dialogue: "Every hop is a new risk. Routers, servers, public Wi-Fi — any one of them can be exploited.",
-                duration: 15000 // 15 seconds
+                duration: 12000 // Reduced from 15 seconds
             },
             {
                 id: 'intercept',
                 title: 'The Attack',
                 description: 'Hacker intercepts the message',
                 dialogue: "Here's the attacker. They can read, alter, or replay the message.",
-                duration: 15000 // 15 seconds
+                duration: 12000 // Reduced from 15 seconds
             },
             {
                 id: 'consequences',
                 title: 'Impact Assessment',
                 description: 'Showing the potential damage',
                 dialogue: "That single intercept can become identity theft, data leaks, or ransomware.",
-                duration: 15000 // 15 seconds
+                duration: 10000 // Reduced from 15 seconds
             },
             {
                 id: 'defense-encryption',
                 title: 'Defense: Encryption',
                 description: 'TLS encryption protects content',
                 dialogue: "Encryption scrambles content — unreadable to eavesdroppers.",
-                duration: 12000 // 12 seconds
+                duration: 10000 // Reduced from 12 seconds
             },
             {
                 id: 'defense-authentication',
                 title: 'Defense: Authentication',
                 description: 'Multi-factor authentication',
                 dialogue: "Strong authentication ensures only the rightful receiver reads it.",
-                duration: 12000 // 12 seconds
+                duration: 10000 // Reduced from 12 seconds
             },
             {
                 id: 'defense-integrity',
                 title: 'Defense: Integrity',
                 description: 'Digital signatures prevent tampering',
                 dialogue: "Digital signatures prove messages weren't tampered with.",
-                duration: 12000 // 12 seconds
+                duration: 10000 // Reduced from 12 seconds
             },
             {
                 id: 'defense-network',
                 title: 'Defense: Network Security',
                 description: 'Firewalls and intrusion detection',
                 dialogue: "Firewalls and IDS detect and stop suspicious traffic.",
-                duration: 12000 // 12 seconds
+                duration: 10000 // Reduced from 12 seconds
             },
             {
                 id: 'defense-endpoint',
                 title: 'Defense: Endpoint Security',
                 description: 'Device security and patching',
                 dialogue: "Secure devices and timely patches remove hacker footholds.",
-                duration: 12000 // 12 seconds
+                duration: 10000 // Reduced from 12 seconds
             },
             {
                 id: 'wrap',
                 title: 'Layered Security',
                 description: 'Multiple defenses working together',
                 dialogue: "Security isn't one thing — it's many layers. If you do these basics, you make intercepts much harder.",
-                duration: 18000 // 18 seconds
+                duration: 15000 // Reduced from 18 seconds
             }
         ];
         
@@ -136,10 +136,9 @@ class ScriptManager {
         // Hide current subtitle
         this.subtitleElement.classList.remove('show');
         
-        setTimeout(() => {
-            this.subtitleElement.textContent = text;
-            this.subtitleElement.classList.add('show');
-        }, 200);
+        // Show new subtitle immediately (no delay)
+        this.subtitleElement.textContent = text;
+        this.subtitleElement.classList.add('show');
     }
     
     nextScene() {
@@ -173,6 +172,11 @@ class ScriptManager {
         this.isPlaying = true;
         this.startTime = Date.now() - this.pausedTime;
         this.updatePlayPauseButton();
+        
+        // Immediately trigger first scene animation
+        if (window.cybersecurityApp) {
+            window.cybersecurityApp.onSceneChange(this.getCurrentScene());
+        }
         
         // Start scene timer
         this.scheduleNextScene();

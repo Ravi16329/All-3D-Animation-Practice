@@ -1,95 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All 3D Animations</title>
-    <style>
-        :root{
-            --bg-1: #0b1226;
-            --bg-2: #071020;
-            --accent1: #06b6d4; /* teal */
-            --accent2: #8b5cf6; /* purple */
-        }
-        *{box-sizing:border-box}
-        body{
-            margin:0;
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-family:Segoe UI, Roboto, system-ui, Arial, sans-serif;
-            background: radial-gradient(1200px 600px at 10% 10%, rgba(99,102,241,0.08), transparent),
-                        radial-gradient(1000px 500px at 90% 90%, rgba(6,182,212,0.06), transparent),
-                        linear-gradient(135deg,var(--bg-1),var(--bg-2));
-            color: #fff;
-        }
-        .container{
-            display:flex;
-            gap:28px;
-            align-items:center;
-            justify-content:center;
-            padding:40px;
-        }
-        .btn{
-            width:160px;
-            height:160px;
-            border-radius:50%;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            text-decoration:none;
-            color: #fff;
-            font-weight:700;
-            font-size:1.05rem;
-            position:relative;
-            overflow:hidden;
-            box-shadow: 0 12px 30px rgba(2,6,23,0.6), inset 0 -6px 20px rgba(0,0,0,0.15);
-            transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s;
-        }
-        .btn:focus{outline:3px solid rgba(255,255,255,0.12); outline-offset:6px}
-        .btn::before{
-            content:"";
-            position:absolute;
-            inset:0;
-            border-radius:50%;
-            z-index:0;
-            filter:blur(18px);
-            opacity:.85;
-            transform:scale(.94);
-            transition: transform .5s ease;
-        }
-        .btn .label{position:relative;z-index:2}
-        .btn .badge{position:absolute;right:10px;bottom:10px;z-index:3;background:rgba(255,255,255,0.08);padding:6px 10px;border-radius:999px;font-size:.78rem}
-        .btn:hover{transform:translateY(-8px) scale(1.03);box-shadow:0 18px 40px rgba(2,6,23,0.7)}
-        .btn:hover::before{transform:scale(1)}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ravi | 3D Animations Hub</title>
+  <style>
+    :root {
+      --bg-1: #0b1226;
+      --bg-2: #071020;
+      --accent1: #06b6d4;
+      --accent2: #8b5cf6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, Arial, sans-serif;
+      color: #fff;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(99,102,241,0.08), transparent),
+                  radial-gradient(1000px 500px at 90% 90%, rgba(6,182,212,0.06), transparent),
+                  linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      overflow-x: hidden;
+    }
 
-        .circle1{background:linear-gradient(135deg,var(--accent1),#06d6a0)}
-        .circle1::before{background:radial-gradient(circle at 30% 30%, rgba(6,182,212,0.95), transparent 40%)}
+    /* Floating "RAVI" background text */
+    .floating-name {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .floating-name span {
+      position: absolute;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.08);
+      animation: floatAround 12s linear infinite;
+      user-select: none;
+    }
+    @keyframes floatAround {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0.2; }
+      25% { transform: translate(100px, -80px) rotate(45deg); opacity: 0.4; }
+      50% { transform: translate(-120px, 100px) rotate(90deg); opacity: 0.2; }
+      75% { transform: translate(80px, 60px) rotate(135deg); opacity: 0.4; }
+      100% { transform: translate(0, 0) rotate(360deg); opacity: 0.2; }
+    }
 
-        .circle2{background:linear-gradient(135deg,var(--accent2),#3b82f6)}
-        .circle2::before{background:radial-gradient(circle at 70% 70%, rgba(139,92,246,0.95), transparent 40%)}
+    /* Top section with buttons */
+    header {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #e0e7ff;
+      letter-spacing: 1px;
+    }
 
-        @media (max-width:480px){
-            .container{flex-direction:column;gap:18px}
-            .btn{width:128px;height:128px}
-        }
-    </style>
+    .container {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .btn {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.05rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(2,6,23,0.6), inset 0 -6px 20px rgba(0,0,0,0.15);
+      transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s;
+    }
+
+    .btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(18px);
+      opacity: .85;
+      transform: scale(.94);
+      transition: transform .5s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 0 18px 40px rgba(2,6,23,0.7);
+    }
+    .btn:hover::before { transform: scale(1); }
+
+    .circle1 { background: linear-gradient(135deg, var(--accent1), #06d6a0); }
+    .circle1::before { background: radial-gradient(circle at 30% 30%, rgba(6,182,212,0.95), transparent 40%); }
+
+    .circle2 { background: linear-gradient(135deg, var(--accent2), #3b82f6); }
+    .circle2::before { background: radial-gradient(circle at 70% 70%, rgba(139,92,246,0.95), transparent 40%); }
+
+    .circle3 { background: linear-gradient(135deg, #f43f5e, #ec4899); }
+    .circle3::before { background: radial-gradient(circle at 50% 50%, rgba(236,72,153,0.95), transparent 40%); }
+
+    /* Section styles */
+    section {
+      min-height: 100vh;
+      padding: 80px 10%;
+      position: relative;
+      z-index: 2;
+    }
+
+    section h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--accent1);
+      padding-left: 10px;
+    }
+
+    section p {
+      max-width: 800px;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    /* Section colors */
+    #college-work h2 { border-color: var(--accent1); }
+    #projects h2 { border-color: var(--accent2); }
+    #fun-pages h2 { border-color: #f43f5e; }
+
+    @media (max-width: 480px) {
+      .container { flex-direction: column; gap: 18px; }
+      .btn { width: 128px; height: 128px; }
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <a href="try.html" class="btn circle1" aria-label="Open Circle 1">
-            <span class="label">Circle 1</span>
-            
-        </a>
-        <a href="try2.html" class="btn circle2" aria-label="Open Circle 2">
-            <span class="label">Circle 2</span>            
-        </a>
-        <a href="try4.html" class="btn circle2" aria-label="Open Circle 2">
-            <span class="label">Circle 4</span>
 
-            <a href="./CyberAlert/index.html" class="btn circle2" aria-label="Open Circle 2">
-            <span class="label">CyberAlert</span>
+  <!-- Floating Background -->
+  <div class="floating-name" id="floatingName"></div>
+
+  <!-- Top Hero Section -->
+  <header>
+    <h1>Welcome to Ravi's 3D Animation Hub</h1>
+    <div class="container">
+      <a href="#college-work" class="btn circle1"><span class="label">College Work</span></a>
+      <a href="#projects" class="btn circle2"><span class="label">Projects</span></a>
+      <a href="#fun-pages" class="btn circle3"><span class="label">Fun Pages</span></a>
     </div>
+  </header>
+
+  <!-- College Work Section -->
+  <section id="college-work">
+    <h2>College Work</h2>
+    <p>
+      Here you can add links or embedded content related to your college assignments, reports, or lab works.<br>
+      Example: <br>
+      <a href="https://ravi16329.github.io/FSDS-FoodSurplusDistributionSystem-/" style="color:#06b6d4;">Food Surplus Distribution System</a> , <br>
+       <a href="./CyberAlert/index.html" style="color:#06b6d4;">Cyber Alert </a> .
+    </p>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects">
+    <h2>Projects</h2>
+    <p>
+      Showcase your main and mini projects here — add links, images, or short demos.<br>
+      Example: <a href="cybersecurity3d.html" style="color:#8b5cf6;">Cyber Security 3D Demo</a>, 
+      <a href="ai-chatbot.html" style="color:#8b5cf6;">AI Chatbot Project</a>.
+    </p>
+  </section>
+
+  <!-- Fun Pages Section -->
+  <section id="fun-pages">
+    <h2>Fun Pages</h2>
+    <p>
+      Add all your experimental or fun creative pages here — animations, games, or anything cool!<br>
+      Example: <a href="particles.html" style="color:#f43f5e;">Particle Animation</a>, 
+      <a href="memes.html" style="color:#f43f5e;">Funny Memes Page</a>.
+    </p>
+  </section>
+
+  <script>
+    // Floating "RAVI" background generator
+    const floatingName = document.getElementById('floatingName');
+    const count = 15;
+    for (let i = 0; i < count; i++) {
+      const span = document.createElement('span');
+      span.textContent = 'RAVI';
+      span.style.left = Math.random() * 100 + '%';
+      span.style.top = Math.random() * 100 + '%';
+      span.style.fontSize = (1.5 + Math.random() * 2.5) + 'rem';
+      span.style.animationDuration = (8 + Math.random() * 6) + 's';
+      span.style.animationDelay = Math.random() * 5 + 's';
+      floatingName.appendChild(span);
+    }
+  </script>
 </body>
 </html>
